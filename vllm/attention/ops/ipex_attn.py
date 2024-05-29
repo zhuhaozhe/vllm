@@ -30,9 +30,9 @@ class PagedAttention:
         num_blocks = kv_cache.shape[1]
 
         key_cache = kv_cache[0]
-        key_cache = key_cache.view(num_blocks, -1, num_kv_heads, head_size)
+        key_cache = key_cache.view(num_blocks, num_kv_heads, -1, head_size)
         value_cache = kv_cache[1]
-        value_cache = value_cache.view(num_blocks, -1, num_kv_heads, head_size)
+        value_cache = value_cache.view(num_blocks, num_kv_heads, -1, head_size)
         return key_cache, value_cache
 
     @staticmethod
