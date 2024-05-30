@@ -66,7 +66,7 @@ class PagedAttention:
         *args,
     ) -> torch.Tensor:
         output = torch.empty_like(query)
-        block_size = value_cache.shape[1]
+        block_size = value_cache.shape[2]
         head_mapping = torch.arange(
             0,
             num_kv_heads,
