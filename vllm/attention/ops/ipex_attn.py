@@ -3,11 +3,20 @@ from typing import Dict, List, Optional, Tuple
 import intel_extension_for_pytorch.llm.modules as ipex_modules
 import torch
 
+from vllm.logger import init_logger
+logger = init_logger(__name__)
+import vllm.envs as envs
+def log_ipex(msg):
+    if envs.VLLM_CPU_IPEX_DEBUG:
+        logger.info(msg)
+
 
 class PagedAttention:
 
     @staticmethod
     def get_supported_head_sizes() -> List[int]:
+        if envs.VLLM_CPU_IPEX_DEBUG:
+            logger.info(f"ipex::{__name__}")
         return [64, 80, 96, 112, 128, 256]
 
     @staticmethod
@@ -18,6 +27,8 @@ class PagedAttention:
         head_size: int,
         *args,
     ) -> Tuple[int, ...]:
+        if envs.VLLM_CPU_IPEX_DEBUG:
+            logger.info(f"ipex::{__name__}")
         return (2, num_blocks, block_size * num_kv_heads * head_size)
 
     @staticmethod
@@ -27,6 +38,8 @@ class PagedAttention:
         head_size: int,
         *args,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
+        if envs.VLLM_CPU_IPEX_DEBUG:
+            logger.info(f"ipex::{__name__}")
         num_blocks = kv_cache.shape[1]
 
         key_cache = kv_cache[0]
@@ -46,6 +59,8 @@ class PagedAttention:
         kv_scale: float,
         *args,
     ) -> None:
+        if envs.VLLM_CPU_IPEX_DEBUG:
+            logger.info(f"ipex::{__name__}")
         ipex_modules.PagedAttention.reshape_and_cache(
             key, value, key_cache, value_cache,
             slot_mapping.flatten().int())
@@ -65,6 +80,8 @@ class PagedAttention:
         kv_scale: float,
         *args,
     ) -> torch.Tensor:
+        if envs.VLLM_CPU_IPEX_DEBUG:
+            logger.info(f"ipex::{__name__}")
         output = torch.empty_like(query)
         block_size = value_cache.shape[2]
         head_mapping = torch.arange(

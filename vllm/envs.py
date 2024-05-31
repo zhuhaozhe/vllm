@@ -36,6 +36,7 @@ if TYPE_CHECKING:
     VLLM_INSTALL_PUNICA_KERNELS: bool = False
     CMAKE_BUILD_TYPE: Optional[str] = None
     VERBOSE: bool = False
+    VLLM_CPU_IPEX_DEBUG: bool = False
 
 # The begin-* and end* here are used by the documentation generator
 # to extract the used env vars.
@@ -197,6 +198,9 @@ environment_variables: Dict[str, Callable[[], Any]] = {
     # default is 4GB
     "VLLM_CPU_KVCACHE_SPACE":
     lambda: int(os.getenv("VLLM_CPU_KVCACHE_SPACE", "0")),
+
+    "VLLM_CPU_IPEX_DEBUG":
+    lambda: bool(int(os.getenv("VLLM_CPU_IPEX_DEBUG", 0))),
 
     # If the env var is set, it uses the Ray's compiled DAG API
     # which optimizes the control plane overhead.
